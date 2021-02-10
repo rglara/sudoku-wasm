@@ -15,7 +15,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:react": "react-scripts build",
+    "build:wasm": "asc ./node_modules/as-bind/lib/assembly/as-bind.ts assembly/index.ts -b public/library.wasm --optimize --exportRuntime",
+    "build": "npm run build:wasm && npm run build:react",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
