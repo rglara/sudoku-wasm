@@ -1,53 +1,66 @@
 import { useRef, useEffect } from 'react';
-import { useAsBind } from 'use-as-bind';
 
 import './Board.css';
 
-const BOARD_SIZE = 60 * 9;
+const CELL_SIZE = 60;
+const TILE_SIZE = CELL_SIZE * 3;
+const BOARD_SIZE = TILE_SIZE * 3;
 
-// const useMyWasm = createAsBindHook('library.wasm', {
-//   imports: {
-//     consoleLog: (message) => {
-//       console.log(message);
-//     },
-//   },
-// });
-
-const drawBoard = (ctx) => {
-  ctx.save();
-
-  // draw outer border
-  ctx.lineWidth = 8;
+const drawSquare = (ctx, thickness, x, y, width, height) => {
+  ctx.lineWidth = thickness;
   ctx.beginPath();
-  ctx.rect(0, 0, BOARD_SIZE, BOARD_SIZE);
+  ctx.rect(x, y, width, height);
   ctx.stroke();
-
-  // draw groups of cells
-  for(let i = 0; i < 2; i++) {
-    for(let j = 0; j < 2; j++) {
-      // draw outside border
-      ctx.lineWidth = 4;
-      for(let a = 0; a < 2; a++) {
-        for(let b = 0; b < 2; b++) {
-          // draw individual square
-          ctx.lineWidth = 2;
-        }
-      }
-    }
-  }
-
-  ctx.restore();
 };
 
-const Board = () => {
-  const { loaded, instance, error } = useAsBind('library.wasm');
+const drawCell = (ctx, x, y) => {
+  ctx.translate(x * CELL_SIZE, y * CELL_SIZE);
+  // draw outer border
+  drawSquare(ctx, 1, 0, 0, CELL_SIZE, CELL_SIZE);
+  ctx.translate(-x * CELL_SIZE, -y * CELL_SIZE);
+};
+
+const drawTile = (ctx, x, y) => {
+  ctx.translate(x * TILE_SIZE, y * TILE_SIZE);
+  // draw outer border
+  drawSquare(ctx, 4, 0, 0, TILE_SIZE, TILE_SIZE);
+  for(let a = 0; a < 3; a++) {
+    for(let b = 0; b < 3; b++) {
+      drawCell(ctx, a, b);
+    }
+  }
+  ctx.translate(-x * TILE_SIZE, -y * TILE_SIZE);
+};
+
+const drawBoard = ctx => {
+  // draw outer border
+  drawSquare(ctx, 12, 0, 0, BOARD_SIZE, BOARD_SIZE);
+
+  // draw tiles
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      drawTile(ctx, i, j);
+    }
+  }
+};
+
+const Board = (props) => {
   const canvasRef = useRef(null);
+  const canvasOrigin = { x: 0, y: 0 };
   useEffect(() => {
     const canvasObj = canvasRef.current;
+    canvasOrigin.x = canvasObj.offsetLeft;
+    canvasOrigin.y = canvasObj.offsetTop;
     const ctx = canvasObj.getContext('2d');
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
     drawBoard(ctx);
   });
+
+  const handleClick = (evt) => {
+    const cellX = Math.floor((evt.pageX - canvasOrigin.x) / CELL_SIZE);
+    const cellY = Math.floor((evt.pageY - canvasOrigin.y) / CELL_SIZE);
+    props.onClick(cellX, cellY);
+  };
 
   return (
     <div className='Board'>
@@ -56,11 +69,8 @@ const Board = () => {
         ref={canvasRef}
         width={BOARD_SIZE}
         height={BOARD_SIZE}
+        onClick={handleClick}
       />
-      <div>
-      {loaded && instance.exports.exampleFunction("hello", "world")}
-      {error && error.message}
-      </div>
     </div>
   );
 };

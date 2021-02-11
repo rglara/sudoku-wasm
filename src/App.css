@@ -12,3 +12,13 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.App-body {
+  margin: 40px;
+  display: flex;
+  flex-direction: row;
+}
+
+.App-controls {
+  margin-left: 40px;
+}
