@@ -66,7 +66,7 @@ const Loader = props => {
 	const handleButtonClick = evt => {
 		if (selectRef.current && selectRef.current.selectedOptions && selectRef.current.selectedOptions.length > 0) {
 			const val = selectRef.current.selectedOptions[0];
-			props.onLoad(PUZZLE_ARRAYS[val.value].grid)
+			props.onLoad(PUZZLE_ARRAYS[val.value])
 		}
 	};
 

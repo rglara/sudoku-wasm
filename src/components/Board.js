@@ -6,6 +6,7 @@ const CELL_SIZE = 80;
 const TILE_SIZE = CELL_SIZE * 3;
 const BOARD_SIZE = TILE_SIZE * 3;
 const SHADE_COLOR = '#F3E12E';
+const PUZZLE_COLOR = 'black';
 
 const Board = props => {
 	const canvasRef = useRef(null);
@@ -22,6 +23,17 @@ const Board = props => {
 		ctx.translate(x * CELL_SIZE, y * CELL_SIZE);
 		ctx.fillStyle = SHADE_COLOR;
 		ctx.fillRect(0, 0, CELL_SIZE, CELL_SIZE);
+		ctx.translate(-x * CELL_SIZE, -y * CELL_SIZE);
+	};
+
+	const drawStartingValue = (ctx, x, y, num) => {
+		ctx.translate(x * CELL_SIZE, y * CELL_SIZE);
+		ctx.strokeStyle = PUZZLE_COLOR;
+		ctx.fillStyle = PUZZLE_COLOR;
+		ctx.textBaseline = 'middle';
+		ctx.textAlign = 'center';
+		ctx.font = '48px sans-serif';
+		ctx.fillText(num, CELL_SIZE/2, CELL_SIZE/2+6);
 		ctx.translate(-x * CELL_SIZE, -y * CELL_SIZE);
 	};
 
@@ -45,6 +57,7 @@ const Board = props => {
 
 	const drawBoard = ctx => {
 		ctx.save();
+		ctx.strokeStyle = PUZZLE_COLOR;
 		// draw outer border
 		drawSquare(ctx, 12, 0, 0, BOARD_SIZE, BOARD_SIZE);
 
@@ -58,13 +71,21 @@ const Board = props => {
 	};
 
 	const drawCellDetails = ctx => {
+		ctx.save();
 		for (let x = 0; x < 9; x++) {
 			for (let y = 0; y < 9; y++) {
 				if ((props.selectedCell.x === x) && (props.selectedCell.y === y)) {
 					shadeCell(ctx, x, y);
 				}
+				if (props.baseBoard && (props.baseBoard.length > 0)) {
+					const val = props.baseBoard[x*9+y];
+					if (val > 0) {
+						drawStartingValue(ctx, x, y, val);
+					}
+				}
 			}
 		}
+		ctx.restore();
 	};
 
 	useEffect(() => {
