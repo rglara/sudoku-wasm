@@ -22,3 +22,26 @@
 .App-controls {
   margin-left: 40px;
 }
+
+.App-edit-mode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.App-edit-mode button {
+  padding: 10px;
+}
+
+.App-edit-mode > :first-child {
+  margin-right: 20px;
+}
+
+.App-selected-mode {
+  padding: 14px;
+  background-color: lime;
+}
+
+.App-message {
+  margin-top: 20px;
+}

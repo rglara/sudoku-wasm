@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 // import { useAsBind } from 'use-as-bind';
 
 import './App.css';
@@ -16,11 +18,17 @@ import Board from './components/Board';
 const App = () => {
   // const { loaded, instance, error } = useAsBind('library.wasm');
   const [message, setMessage] = useState('');
-  const [selectedCell, setSelectedCell] = useState(null);
+  const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
+  const [isPenMode, setIsPenMode] = useState(true);
 
   const handleBoardClick = (cellX, cellY) => {
+    setSelectedCell({ x: cellX, y: cellY })
     setMessage(`Cell clicked: (${cellX}, ${cellY})`);
   };
+
+  const handleEditModeClick = () => {
+    setIsPenMode(!isPenMode);
+  }
   
   return (
     <div className='App'>
@@ -30,7 +38,27 @@ const App = () => {
       <div className='App-body'>
         <Board selectedCell={selectedCell} onClick={handleBoardClick}/>
         <div className='App-controls'>
-          {message}
+          <div className='App-edit-mode'>
+            { isPenMode &&
+            <button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPencilAlt} size='4x' /></button>
+            }
+            { !isPenMode &&
+            <div className='App-selected-mode'>
+              <FontAwesomeIcon icon={faPencilAlt} size='3x' />
+            </div>
+            }
+            { isPenMode &&
+            <div className='App-selected-mode'>
+              <FontAwesomeIcon icon={faPenFancy} size='3x' />
+            </div>
+            }
+            { !isPenMode &&
+            <button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPenFancy} size='4x' /></button>
+            }
+          </div>
+          <div className='App-message'>
+            {message}
+          </div>
         </div>
       </div>
     </div>
