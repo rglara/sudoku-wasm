@@ -16,53 +16,53 @@ import Board from './components/Board';
 // });
 
 const App = () => {
-  // const { loaded, instance, error } = useAsBind('library.wasm');
-  const [message, setMessage] = useState('');
-  const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
-  const [isPenMode, setIsPenMode] = useState(true);
+	// const { loaded, instance, error } = useAsBind('library.wasm');
+	const [message, setMessage] = useState('');
+	const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
+	const [isPenMode, setIsPenMode] = useState(true);
 
-  const handleBoardClick = (cellX, cellY) => {
-    setSelectedCell({ x: cellX, y: cellY })
-    setMessage(`Cell clicked: (${cellX}, ${cellY})`);
-  };
+	const handleBoardClick = (cellX, cellY) => {
+		setSelectedCell({ x: cellX, y: cellY })
+		setMessage(`Cell clicked: (${cellX}, ${cellY})`);
+	};
 
-  const handleEditModeClick = () => {
-    setIsPenMode(!isPenMode);
-  }
+	const handleEditModeClick = () => {
+		setIsPenMode(!isPenMode);
+	}
   
-  return (
-    <div className='App'>
-      <header className='App-header'>
-        Sudoku Solver
-      </header>
-      <div className='App-body'>
-        <Board selectedCell={selectedCell} onClick={handleBoardClick}/>
-        <div className='App-controls'>
-          <div className='App-edit-mode'>
-            { isPenMode &&
-            <button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPencilAlt} size='4x' /></button>
-            }
-            { !isPenMode &&
-            <div className='App-selected-mode'>
-              <FontAwesomeIcon icon={faPencilAlt} size='3x' />
-            </div>
-            }
-            { isPenMode &&
-            <div className='App-selected-mode'>
-              <FontAwesomeIcon icon={faPenFancy} size='3x' />
-            </div>
-            }
-            { !isPenMode &&
-            <button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPenFancy} size='4x' /></button>
-            }
-          </div>
-          <div className='App-message'>
-            {message}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className='App'>
+			<header className='App-header'>
+				Sudoku Solver
+			</header>
+			<div className='App-body'>
+				<Board selectedCell={selectedCell} onClick={handleBoardClick}/>
+				<div className='App-controls'>
+					<div className='App-edit-mode'>
+						{ isPenMode &&
+						<button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPencilAlt} size='4x' /></button>
+						}
+						{ !isPenMode &&
+						<div className='App-selected-mode'>
+							<FontAwesomeIcon icon={faPencilAlt} size='3x' />
+						</div>
+						}
+						{ isPenMode &&
+						<div className='App-selected-mode'>
+							<FontAwesomeIcon icon={faPenFancy} size='3x' />
+						</div>
+						}
+						{ !isPenMode &&
+						<button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPenFancy} size='4x' /></button>
+						}
+					</div>
+					<div className='App-message'>
+						{message}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 };
 //<div>
 //{loaded && instance.exports.exampleFunction("hello", "world")}
