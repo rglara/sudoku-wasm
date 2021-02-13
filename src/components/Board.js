@@ -7,7 +7,7 @@ const TILE_SIZE = CELL_SIZE * 3;
 const BOARD_SIZE = TILE_SIZE * 3;
 const SHADE_COLOR = '#F3E12E';
 
-const Board = (props) => {
+const Board = props => {
 	const canvasRef = useRef(null);
 	const canvasOrigin = { x: 0, y: 0 };
 
@@ -77,7 +77,7 @@ const Board = (props) => {
 		drawBoard(ctx);
 	});
 
-	const handleClick = (evt) => {
+	const handleClick = evt => {
 		const cellX = Math.floor((evt.pageX - canvasOrigin.x) / CELL_SIZE);
 		const cellY = Math.floor((evt.pageY - canvasOrigin.y) / CELL_SIZE);
 		props.onClick(cellX, cellY);

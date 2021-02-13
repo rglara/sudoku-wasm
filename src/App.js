@@ -6,6 +6,7 @@ import { faPencilAlt, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 
 import Board from './components/Board';
+import Loader from './components/Loader';
 
 // const useMyWasm = createAsBindHook('library.wasm', {
 //   imports: {
@@ -28,7 +29,11 @@ const App = () => {
 
 	const handleEditModeClick = () => {
 		setIsPenMode(!isPenMode);
-	}
+	};
+
+	const handleLoaderLoad = val => {
+		setMessage(`Loader Load: ${val}`);
+	};
   
 	return (
 		<div className='App'>
@@ -56,6 +61,7 @@ const App = () => {
 						<button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPenFancy} size='4x' /></button>
 						}
 					</div>
+					<Loader onLoad={handleLoaderLoad} />
 					<div className='App-message'>
 						{message}
 					</div>
