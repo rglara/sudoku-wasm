@@ -39,9 +39,17 @@ const App = () => {
 		setBaseBoard(val.grid);
 		setMessage(`New board '${val.name}' loaded!`);
 	};
+
+	const handleKeyPress = evt => {
+		setMessage(evt.key);
+	};
   
 	return (
-		<div className='App'>
+		<div
+			className='App'
+			tabIndex={0}
+			onKeyPress={handleKeyPress}
+		>
 			<header className='App-header'>
 				Sudoku Solver
 			</header>
