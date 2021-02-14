@@ -19,7 +19,9 @@ import Loader from './components/Loader';
 const App = () => {
 	// const { loaded, instance, error } = useAsBind('library.wasm');
 	const [message, setMessage] = useState('');
-	const [baseBoard, setBaseBoard] = useState([]);
+	const [baseBoard, setBaseBoard] = useState(new Array(81));
+	const [penMarks, setPenMarks] = useState(new Array(81));
+	const [pencilMarks, setPencilMarks] = useState(new Array(81));
 	const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
 	// const [isPenMode, setIsPenMode] = useState(true);
 
@@ -46,6 +48,8 @@ const App = () => {
 			<div className='App-body'>
 				<Board
 					baseBoard={baseBoard}
+					penMarks={penMarks}
+					pencilMarks={pencilMarks}
 					selectedCell={selectedCell}
 					onClick={handleBoardClick}
 				/>
