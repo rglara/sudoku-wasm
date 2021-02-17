@@ -1,3 +1,7 @@
+declare function onUpdate(evt: string): void;
+
 export function exampleFunction(a: string, b: string): string {
-	return a + " " + b;
+	const output = a + ' ' + b;
+	onUpdate('DEBUG: ' + output);
+	return output;
 }

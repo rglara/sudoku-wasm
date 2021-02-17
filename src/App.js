@@ -1,23 +1,14 @@
 import { useState } from 'react';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faPencilAlt, faPenFancy } from '@fortawesome/free-solid-svg-icons';
-// import { useAsBind } from 'use-as-bind';
 
 import './App.css';
 
 import Board from './components/Board';
 import Loader from './components/Loader';
-
-// const useMyWasm = createAsBindHook('library.wasm', {
-//   imports: {
-//     consoleLog: (message) => {
-//       console.log(message);
-//     },
-//   },
-// });
+import Solver from './components/Solver';
 
 const App = () => {
-	// const { loaded, instance, error } = useAsBind('library.wasm');
 	const [message, setMessage] = useState('');
 	const [baseBoard, setBaseBoard] = useState(new Array(81));
 	const [penMarks, setPenMarks] = useState(new Array(81));
@@ -40,15 +31,19 @@ const App = () => {
 		setMessage(`New board '${val.name}' loaded!`);
 	};
 
-	const handleKeyPress = evt => {
-		setMessage(evt.key);
+	const handleSolverUpdate = evt => {
+		setMessage(evt);
 	};
-  
+
+	// const handleKeyPress = evt => {
+	// 	setMessage(evt.key);
+	// };
+
 	return (
 		<div
 			className='App'
-			tabIndex={0}
-			onKeyPress={handleKeyPress}
+			// tabIndex={0}
+			// onKeyPress={handleKeyPress}
 		>
 			<header className='App-header'>
 				Sudoku Solver
@@ -81,6 +76,7 @@ const App = () => {
 						}
 					</div> */}
 					<Loader onLoad={handleLoaderLoad} />
+					<Solver onUpdate={handleSolverUpdate} />
 					<div className='App-message'>
 						{message}
 					</div>
@@ -89,9 +85,5 @@ const App = () => {
 		</div>
 	);
 };
-//<div>
-//{loaded && instance.exports.exampleFunction("hello", "world")}
-//{error && error.message}
-//</div>
 
 export default App;
