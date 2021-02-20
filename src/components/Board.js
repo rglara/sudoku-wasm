@@ -108,7 +108,7 @@ const Board = props => {
 				if ((props.selectedCell.x === x) && (props.selectedCell.y === y)) {
 					shadeCell(ctx, x, y);
 				}
-				const arrayIndex = x*9+y;
+				const arrayIndex = y*9+x;
 				if (props.baseBoard && (props.baseBoard.length > 0)) {
 					const num = props.baseBoard[arrayIndex];
 					if (num > 0) {

@@ -10,8 +10,8 @@ const Solver = props => {
 	const [error, setError] = useState(null);
 	const [instance, setInstance] = useState(null);
 
-	const onUpdate = evt => {
-		props.onUpdate(evt);
+	const onUpdate = (message, cellX, cellY, val, isPen) => {
+		props.onUpdate({ message, cellX, cellY, val, isPen });
 	};
 	const runSolver = async () => {
 		try {
@@ -25,10 +25,17 @@ const Solver = props => {
 				localInstance = instance;
 			}
 
-			// Should call consoleLog, and log: "Hello from AS!"
-			localInstance.exports.exampleFunction('hello', 'world');
-			await new Promise(resolve => setTimeout(resolve, 2000));
-			localInstance.exports.exampleFunction('and', 'again');
+			let puzzleStr = '';
+			for (let i = 0; i < props.baseBoard.length; i += 1) {
+				const cellValue = props.baseBoard[i];
+				if (cellValue) {
+					puzzleStr += cellValue.toString();
+				} else {
+					puzzleStr += '0';
+				}
+			}
+
+			localInstance.exports.solvePuzzle(puzzleStr);
 		}
 		catch(err) {
 			setError(err);
@@ -39,7 +46,6 @@ const Solver = props => {
 		setIsProcessing(true);
 		await runSolver();
 		setIsProcessing(false);
-
 	};
 
 	return (

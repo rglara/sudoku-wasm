@@ -28,11 +28,31 @@ const App = () => {
 
 	const handleLoaderLoad = val => {
 		setBaseBoard(val.grid);
+		setPencilMarks(new Array(81));
+		setPenMarks(new Array(81));
 		setMessage(`New board '${val.name}' loaded!`);
 	};
 
+	const setPencilMark = (x, y, val) => {
+		const localMarks = pencilMarks;
+		localMarks[y*9+x] = val;
+		setPencilMarks(localMarks);
+	};
+	const setPenMark = (x, y, val) => {
+		const localMarks = penMarks;
+		localMarks[y*9+x] = val;
+		setPenMarks(localMarks);
+	};
 	const handleSolverUpdate = evt => {
-		setMessage(evt);
+		if ((evt.cellX >= 0) && (evt.cellX < 9) && (evt.cellY >= 0) && (evt.cellY < 9)) {
+			if (evt.isPen) {
+				setPenMark(evt.cellX, evt.cellY, evt.val);
+			} else {
+				setPencilMark(evt.cellX, evt.cellY, evt.val);
+			}
+		}
+		setSelectedCell({ x: -1, y: -1 });
+		setMessage(evt.message);
 	};
 
 	// const handleKeyPress = evt => {
@@ -76,7 +96,7 @@ const App = () => {
 						}
 					</div> */}
 					<Loader onLoad={handleLoaderLoad} />
-					<Solver onUpdate={handleSolverUpdate} />
+					<Solver onUpdate={handleSolverUpdate} baseBoard={baseBoard} />
 					<div className='App-message'>
 						{message}
 					</div>
