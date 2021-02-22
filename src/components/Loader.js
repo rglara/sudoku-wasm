@@ -18,6 +18,20 @@ const PUZZLE_ARRAYS = [
 		],
 	},
 	{
+		name: 'Diagonal',
+		grid: [
+			0,2,3,4,5,6,7,8,9,
+			2,0,4,5,6,7,8,9,1,
+			3,4,0,6,7,8,9,1,2,
+			4,5,6,0,8,9,1,2,3,
+			5,6,7,8,0,1,2,3,4,
+			6,7,8,9,1,0,3,4,5,
+			7,8,9,1,2,3,0,5,6,
+			8,9,1,2,3,4,5,0,7,
+			9,1,2,3,4,5,6,7,0,
+		],
+	},
+	{
 		name: 'Full',
 		grid: [
 			1,2,3,4,5,6,7,8,9,
@@ -74,13 +88,13 @@ const PUZZLE_ARRAYS = [
 	},
 ];
 
-const Loader = props => {
+const Loader = ({onLoad}) => {
 	const selectRef = useRef(null);
 
 	const handleButtonClick = evt => {
 		if (selectRef.current && selectRef.current.selectedOptions && selectRef.current.selectedOptions.length > 0) {
 			const val = selectRef.current.selectedOptions[0];
-			props.onLoad(PUZZLE_ARRAYS[val.value])
+			onLoad(PUZZLE_ARRAYS[val.value])
 		}
 	};
 

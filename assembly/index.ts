@@ -1,3 +1,8 @@
+function sleep( ms: i64 ): void {
+	const now = Date.now();
+	while (Date.now() < (now + ms)) {}
+}
+
 declare function onUpdate(
 	message: string,
 	cellX: i32,
@@ -18,6 +23,7 @@ export function solvePuzzle(puzzle: string): boolean {
 			x = 0;
 			y += 1;
 		}
+		sleep(100);
 	}
 	return true;
 }

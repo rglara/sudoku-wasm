@@ -5,13 +5,13 @@ import './Solver.css';
 
 const wasm = fetch('library.wasm');
 
-const Solver = props => {
+const Solver = ({onProgress, baseBoard}) => {
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [error, setError] = useState(null);
 	const [instance, setInstance] = useState(null);
 
 	const onUpdate = (message, cellX, cellY, val, isPen) => {
-		props.onUpdate({ message, cellX, cellY, val, isPen });
+		onProgress({ message, cellX, cellY, val, isPen });
 	};
 	const runSolver = async () => {
 		try {
@@ -25,17 +25,7 @@ const Solver = props => {
 				localInstance = instance;
 			}
 
-			let puzzleStr = '';
-			for (let i = 0; i < props.baseBoard.length; i += 1) {
-				const cellValue = props.baseBoard[i];
-				if (cellValue) {
-					puzzleStr += cellValue.toString();
-				} else {
-					puzzleStr += '0';
-				}
-			}
-
-			localInstance.exports.solvePuzzle(puzzleStr);
+			localInstance.exports.solvePuzzle(baseBoard);
 		}
 		catch(err) {
 			setError(err);

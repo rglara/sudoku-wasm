@@ -10,9 +10,9 @@ import Solver from './components/Solver';
 
 const App = () => {
 	const [message, setMessage] = useState('');
-	const [baseBoard, setBaseBoard] = useState(new Array(81));
-	const [penMarks, setPenMarks] = useState(new Array(81));
-	const [pencilMarks, setPencilMarks] = useState(new Array(81));
+	const [baseBoard, setBaseBoard] = useState('0'.repeat(81));
+	const [penMarks, setPenMarks] = useState('0'.repeat(81));
+	const [pencilMarks, setPencilMarks] = useState('|'.repeat(80));
 	const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
 	// const [isPenMode, setIsPenMode] = useState(true);
 
@@ -27,21 +27,26 @@ const App = () => {
 	// };
 
 	const handleLoaderLoad = val => {
-		setBaseBoard(val.grid);
-		setPencilMarks(new Array(81));
-		setPenMarks(new Array(81));
+		// convert base board array to string
+		const bbStr = val.grid.map(num => num.toString()).join('');
+		setBaseBoard(bbStr);
+		setPencilMarks('|'.repeat(80));
+		setPenMarks('0'.repeat(81));
 		setMessage(`New board '${val.name}' loaded!`);
 	};
 
 	const setPencilMark = (x, y, val) => {
-		const localMarks = pencilMarks;
-		localMarks[y*9+x] = val;
-		setPencilMarks(localMarks);
+		setPencilMarks(currentMarks => {
+			const array = currentMarks.split('|');
+			array[y*9+x] = val;
+			return array.join('|');
+		});
 	};
 	const setPenMark = (x, y, val) => {
-		const localMarks = penMarks;
-		localMarks[y*9+x] = val;
-		setPenMarks(localMarks);
+		const index = y*9+x;
+		setPenMarks(currentMarks => {
+			return currentMarks.slice(0, index) + val + currentMarks.slice(index + 1);
+		});
 	};
 	const handleSolverUpdate = evt => {
 		if ((evt.cellX >= 0) && (evt.cellX < 9) && (evt.cellY >= 0) && (evt.cellY < 9)) {
@@ -96,7 +101,7 @@ const App = () => {
 						}
 					</div> */}
 					<Loader onLoad={handleLoaderLoad} />
-					<Solver onUpdate={handleSolverUpdate} baseBoard={baseBoard} />
+					<Solver onProgress={handleSolverUpdate} baseBoard={baseBoard} />
 					<div className='App-message'>
 						{message}
 					</div>
