@@ -3,7 +3,7 @@
 		"react-app",
 		"react-app/jest"
 	],
-	"ignorePatterns": "build/*",
+	"ignorePatterns": ["build/*", "public/*"],
 	"rules": {
 		"indent": ["error", "tab"],
 		"react/jsx-indent": ["error", "tab"],
