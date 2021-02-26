@@ -4,7 +4,17 @@ function sleep(ms: i32): void {
 }
 
 function strToBits(str: string): i16 {
-	return 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256;
+	let output: i16 = 0;
+	output += str.includes('1') ? 1 : 0;
+	output += str.includes('2') ? 2 : 0;
+	output += str.includes('3') ? 4 : 0;
+	output += str.includes('4') ? 8 : 0;
+	output += str.includes('5') ? 16 : 0;
+	output += str.includes('6') ? 32 : 0;
+	output += str.includes('7') ? 64 : 0;
+	output += str.includes('8') ? 128 : 0;
+	output += str.includes('9') ? 256 : 0;
+	return output;
 }
 
 declare function onUpdate(
@@ -14,6 +24,7 @@ declare function onUpdate(
 	isPen: boolean): void;
 
 export function solvePuzzle(puzzleIn: string, delay: i32): boolean {
+	// set all empty cells to have all pencil marks
 	let x: i16 = 0;
 	let y: i16 = 0;
 	for (let i = 0; i < puzzleIn.length; i += 1) {

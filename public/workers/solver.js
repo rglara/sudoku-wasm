@@ -1,14 +1,25 @@
 const onUpdate = (cellX, cellY, value, isPen) => {
-	let str = '123456789';
-	// process value to string
-
+	let val = '';
+	if (isPen) {
+		val = value;
+	} else {
+		val += value & 1 ? '1' : '';
+		val += value & 2 ? '2' : '';
+		val += value & 4 ? '3' : '';
+		val += value & 8 ? '4' : '';
+		val += value & 16 ? '5' : '';
+		val += value & 32 ? '6' : '';
+		val += value & 64 ? '7' : '';
+		val += value & 128 ? '8' : '';
+		val += value & 256 ? '9' : '';
+	}
 	self.postMessage({
 		type: 'progress',
 		progress: {
 			message: `${isPen ? 'pen' : 'pencil'} (${cellX}, ${cellY})`,
 			cellX,
 			cellY,
-			val: str,
+			val,
 			isPen,
 		}
 	});
