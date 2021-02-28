@@ -28,7 +28,7 @@ const Solver = ({onProgress, baseBoard}) => {
 	});
 
 	const runSolver = () => {
-		libWorker.postMessage({ type: 'goSolve', baseBoard });
+		libWorker.postMessage({ type: 'goSolve', baseBoard, delay: 100 });
 	}
 
 	const handleButtonClick = async () => {

@@ -47,8 +47,12 @@ const SolvePuzzleAsync = async (puzzleStr, delay) => {
 			for (let i = 0, p = ptr >>> 1; i < length; ++i) U16[p + i] = str.charCodeAt(i);
 			return ptr;
 		};
-		solverInstance.exports.solvePuzzle(marshalString(puzzleStr), delay);
-		self.postMessage({ type: 'done' });
+		const numCellsSolved = solverInstance.exports.solvePuzzle(marshalString(puzzleStr), delay);
+		let error = null;
+		if (numCellsSolved !== 81) {
+			error = { message: 'Unable to solve' };
+		}
+		self.postMessage({ type: 'done', error });
 	}
 	catch(err) {
 		self.postMessage({ type: 'done', error: err });
