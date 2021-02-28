@@ -1,3 +1,5 @@
+declare function onUpdate(cellX: i16, cellY: i16, value: i16, isPen: boolean): void;
+
 function sleep(ms: i32): void {
 	const now = Date.now();
 	while (Date.now() < (now + ms)) {}
@@ -34,11 +36,34 @@ function columnRowIndices(x: i16, y: i16): Array<i16> {
 	return output;
 }
 
-declare function onUpdate(cellX: i16, cellY: i16, value: i16, isPen: boolean): void;
-
 function sendUpdate(delay: i32, cellX: i16, cellY: i16, value: string, isPen: boolean): void {
 	onUpdate(cellX, cellY, strToBits(value), isPen);
 	sleep(delay);
+}
+
+class Coordinates { constructor(public x: i16, public y: i16) {}};
+function getCoordsFromIndex(index: i32): Coordinates {
+	return new Coordinates(index % 9 as i16, Math.floor(index / 9) as i16);
+}
+
+function markWithPen(
+	knowns: Array<string>, guesses: Array<string>, matrixIndex: i32, val: string, delay: i32
+): void {
+	knowns[matrixIndex] = val;
+	guesses[matrixIndex] = val;
+	const coords = getCoordsFromIndex(matrixIndex);
+	const indices = columnRowIndices(coords.x, coords.y);
+	for (let d = 0; d < indices.length; d += 1) {
+		const index = indices[d];
+		let currentGuess = guesses[index];
+		if (currentGuess.includes(val)) {
+			const crX: i16 = index % 9;
+			const crY: i16 = Math.floor(index / 9) as i16;
+			const newGuess = currentGuess.replace(val, '');
+			guesses[index] = newGuess;
+			sendUpdate(delay, crX, crY, newGuess, false);
+		}
+	}
 }
 
 export function solvePuzzle(puzzleIn: string, delay: i32): i16 {
@@ -48,53 +73,35 @@ export function solvePuzzle(puzzleIn: string, delay: i32): i16 {
 	for (let k = 0; k < knownMatrix.length; k += 1) { knownMatrix[k] = ''; }
 
 	// set all empty cells to have all pencil marks
-	let x: i16 = 0;
-	let y: i16 = 0;
 	for (let i = 0; i < puzzleIn.length; i += 1) {
 		const val: string = puzzleIn.charAt(i);
 		if (!'123456789'.includes(val)) {
-			sendUpdate(delay, x, y, '123456789', false);
-		}
-		x += 1;
-		if (x > 8) {
-			x = 0;
-			y += 1;
+			const coords = getCoordsFromIndex(i);
+			sendUpdate(delay, coords.x, coords.y, '123456789', false);
 		}
 	}
 
-	x = 0;
-	y = 0;
 	let numKnown: i16 = 0;
 	// input puzzle input into known matrix
 	for (let i = 0; i < puzzleIn.length; i += 1) {
 		const val: string = puzzleIn.charAt(i);
 		if ('123456789'.includes(val)) {
-			knownMatrix[i] = val;
 			numKnown += 1;
-			guessMatrix[i] = val;
-			const indices = columnRowIndices(x, y);
-			for (let d = 0; d < indices.length; d += 1) {
-				const index = indices[d];
-				let currentGuess = guessMatrix[index];
-				if (currentGuess.includes(val)) {
-					const crX: i16 = index % 9;
-					const crY: i16 = Math.floor(index / 9) as i16;
-					const newGuess = currentGuess.replace(val, '');
-					guessMatrix[index] = newGuess;
-					sendUpdate(delay, crX, crY, newGuess, false);
-				}
-			}
-		}
-		x += 1;
-		if (x > 8) {
-			x = 0;
-			y += 1;
+			markWithPen(knownMatrix, guessMatrix, i, val, delay);
 		}
 	}
 
 	let hasChanged = false;
 	do {
 		hasChanged = false;
+
+		// Rule 1: If any cell has only one remaining guess, mark it in pen
+
+		// Rule 2a: If any row only has one possibility for a spot, mark it in pen
+
+		// Rule 2b: If any column only has one possibility for a spot, mark it in pen
+
+		// Rule 2c: If any supercell only has one possibility for a spot, mark it in pen
 
 	} while (hasChanged);
 
