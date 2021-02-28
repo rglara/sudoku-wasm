@@ -1,6 +1,6 @@
-import { useState } from 'react';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faPencilAlt, faPenFancy } from '@fortawesome/free-solid-svg-icons';
+import { useState, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 
 import './App.css';
 
@@ -14,17 +14,19 @@ const App = () => {
 	const [penMarks, setPenMarks] = useState('0'.repeat(81));
 	const [pencilMarks, setPencilMarks] = useState('|'.repeat(80));
 	const [selectedCell, setSelectedCell] = useState({ x: -1, y: -1 });
-	// const [isPenMode, setIsPenMode] = useState(true);
+	const [isPenMode, setIsPenMode] = useState(true);
+	const mainRef = useRef(null);
 
 	const handleBoardClick = (cellX, cellY) => {
 		setSelectedCell({ x: cellX, y: cellY })
 		setMessage(`Cell clicked: (${cellX}, ${cellY})`);
 	};
 
-	// const handleEditModeClick = () => {
-	// 	setIsPenMode(!isPenMode);
-	// 	setMessage(`Now in ${isPenMode ? 'Pencil' : 'Pen'} mode`);
-	// };
+	const handleEditModeClick = () => {
+		setIsPenMode(!isPenMode);
+		setMessage(`Now in ${isPenMode ? 'Pencil' : 'Pen'} mode`);
+		mainRef.current.focus();
+	};
 
 	const handleLoaderLoad = val => {
 		// convert base board array to string
@@ -35,19 +37,31 @@ const App = () => {
 		setMessage(`New board '${val.name}' loaded!`);
 	};
 
-	const setPencilMark = (x, y, val) => {
+	const setPencilMark = (x, y, val, doToggle) => {
 		setPencilMarks(currentMarks => {
 			const array = currentMarks.split('|');
-			array[y*9+x] = val;
+			const index = y*9+x;
+			let newValue = val;
+			if (doToggle) {
+				const currentValue = array[index];
+				if (currentValue.indexOf(val) < 0) {
+					newValue = currentValue + val;
+				} else {
+					newValue = currentValue.replace(val, '');
+				}
+			}
+			array[index] = newValue;
 			return array.join('|');
 		});
 	};
+
 	const setPenMark = (x, y, val) => {
-		const index = y*9+x;
 		setPenMarks(currentMarks => {
-			return currentMarks.slice(0, index) + val + currentMarks.slice(index + 1);
+			const index = y*9+x;
+			return currentMarks.slice(0, index) + val + currentMarks.slice(index + 1)
 		});
 	};
+
 	const handleSolverUpdate = evt => {
 		if ((evt.cellX >= 0) && (evt.cellX < 9) && (evt.cellY >= 0) && (evt.cellY < 9)) {
 			if (evt.isPen) {
@@ -60,15 +74,54 @@ const App = () => {
 		setMessage(evt.message);
 	};
 
-	// const handleKeyPress = evt => {
-	// 	setMessage(evt.key);
-	// };
+	const handleKeyPress = evt => {
+		if (evt.key) {
+			if (evt.key >= '1' && evt.key <= '9') {
+				setMessage(`Toggle ${evt.key} in ${isPenMode ? 'pen': 'pencil'}`);
+				if (isPenMode) {
+					setPenMark(selectedCell.x, selectedCell.y, evt.key);
+				} else {
+					setPencilMark(selectedCell.x, selectedCell.y, evt.key, true);
+				}
+			} else if (evt.key === 's') {
+				handleEditModeClick();
+			} else if (evt.key === 'x') {
+				setPenMark(selectedCell.x, selectedCell.y, '0');
+				setPencilMark(selectedCell.x, selectedCell.y, '');
+			} else if (evt.key === 'ArrowUp') {
+				setSelectedCell(currentCell => {
+					let newY = currentCell.y - 1;
+					if (newY < 0) { newY = 0; }
+					return { x: currentCell.x, y: newY };
+				});
+			} else if (evt.key === 'ArrowDown') {
+				setSelectedCell(currentCell => {
+					let newY = currentCell.y + 1;
+					if (newY > 8) { newY = 8; }
+					return { x: currentCell.x, y: newY };
+				});
+			} else if (evt.key === 'ArrowLeft') {
+				setSelectedCell(currentCell => {
+					let newX = currentCell.x - 1;
+					if (newX < 0) { newX = 0; }
+					return { x: newX, y: currentCell.y };
+				});
+			} else if (evt.key === 'ArrowRight') {
+				setSelectedCell(currentCell => {
+					let newX = currentCell.x + 1;
+					if (newX > 8) { newX = 8; }
+					return { x: newX, y: currentCell.y };
+				});
+			}
+		}
+	};
 
 	return (
 		<div
 			className='App'
-			// tabIndex={0}
-			// onKeyPress={handleKeyPress}
+			tabIndex={0}
+			onKeyUp={handleKeyPress}
+			ref={mainRef}
 		>
 			<header className='App-header'>
 				Sudoku Solver
@@ -82,7 +135,7 @@ const App = () => {
 					onClick={handleBoardClick}
 				/>
 				<div className='App-controls'>
-					{/* <div className='App-edit-mode'>
+					<div className='App-edit-mode'>
 						{ isPenMode &&
 						<button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPencilAlt} size='4x' /></button>
 						}
@@ -99,7 +152,7 @@ const App = () => {
 						{ !isPenMode &&
 						<button onClick={handleEditModeClick}><FontAwesomeIcon icon={faPenFancy} size='4x' /></button>
 						}
-					</div> */}
+					</div>
 					<Loader onLoad={handleLoaderLoad} />
 					<Solver onProgress={handleSolverUpdate} baseBoard={baseBoard} />
 					<div className='App-message'>

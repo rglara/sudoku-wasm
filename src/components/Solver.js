@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 
 import './Solver.css';
 
+const libWorker = new Worker('./workers/solver.js');
+
 const Solver = ({onProgress, baseBoard}) => {
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [error, setError] = useState(null);
-
-	const libWorker = new Worker('./workers/solver.js');
 
 	useEffect(() => {
 		libWorker.onmessage = evt => {
